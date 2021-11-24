@@ -1,0 +1,72 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/content_center?serverTimezone=GMT
+    hikari:
+      username: root
+      password: 110308
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        # 指定nacos 地址
+        server-addr: localhost:8848
+  application:
+    # 服务名称用- 不要用_ 不要用特殊字符
+    name: content-center
+
+server:
+  port: 8088
+
+
+#使用配置属性配置ribbon
+#与UserCtnterRibbonConfiguration 二者取其一
+#user-center:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+
+#ribbon饥饿加载 比懒加载请求速度快
+ribbon:
+  eager-load:
+    enabled: true
+    clients: user-center
+
+#设置日志级别 配合Feign使用
+#需要配置Feign的全路径  并且设置日志级别为debug
+logging:
+  level:
+    com.itmuch.contentcenter.feign.UserFeignClient: debug
+
+#feign属性配置细粒度
+#feign:
+#  client:
+#    config:
+#      #想要调用微服务的名称
+#      user-center:
+#        loggerLevel: full
+
+#feign属性配置全局
+feign:
+  client:
+    config:
+      #全局配置将服务名称改成 default即可
+      default:
+        loggerLevel: full
+
+#feign支持的配置项
+#feign:
+#  client:
+#    config:
+#      feignName:
+#        connectTimeout: 5000  # 相当于Request.Optionsn 连接超时时间
+#        readTimeout: 5000     # 相当于Request.Options 读取超时时间
+#        loggerLevel: full     # 配置Feign的日志级别，相当于代码配置方式中的Logger
+#        errorDecoder: com.example.SimpleErrorDecoder  # Feign的错误解码器，相当于代码配置方式中的ErrorDecoder
+#        retryer: com.example.SimpleRetryer  # 配置重试，相当于代码配置方式中的Retryer
+#        requestInterceptors: # 配置拦截器，相当于代码配置方式中的RequestInterceptor
+#          - com.example.FooRequestInterceptor
+#          - com.example.BarRequestInterceptor
+#        # 是否对404错误解码
+#        decode404: false
+#        encode: com.example.SimpleEncoder #编码器
+#        decoder: com.example.SimpleDecoder #解码器
+#        contract: com.example.SimpleContract #契约
